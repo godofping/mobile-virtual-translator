@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title></title>
+
+  <link rel="manifest" href="manifest.json">
+
+  <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+  <script src="lib/artyom.js/build-vanilla/artyom.min.js"></script>
+
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+
+  <!-- your app's js -->
+  <script src="js/app.js"></script>
+
+  <script type="text/javascript" src="lib/angular-ripple/angular-ripple.js"></script>
+
+</head>
+
+<body ng-app="translator" ng-controller="translateCtrl">
+
+  <ion-pane>
+    <ion-header-bar class="bar-positive">
+      <h1 class="title">Handy Translator</h1>
+      <div class="buttons">
+        <button class="button button-icon ion-ios-gear-outline " ng-click="languagesModal.show()"></button>
+      </div>
+    </ion-header-bar>
+    <ion-content padding="true">
+      <div class="spinner" ng-show="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
+      <button ng-click="start()" class="button button-large button-assertive icon-left ion-chatbubble-working" id="talkButton"
+        ng-hide="talkButton">
+          TAP TO TALK
+        </button>
+        <!-- languages modal -->
+      <script id="languages.html" type="text/ng-template">
+        <ion-modal-view>
+          <ion-header-bar class="bar-assertive">
+            <h1 class="title">Available Languages</h1>
+            <button class="button button-icon ion-close " ng-click="languagesModal.hide()" angular-ripple></button>
+          </ion-header-bar>
+
+          <ion-content class="padding">
+            <div class="card" ng-repeat="l in languages">
+              <div class="item item-divider">
+                {{l.name}}
+              </div>
+              <div class="item item-image" >
+                <img ng-src="{{l.img}}" alt="{{l.img}}" ng-click="selectLang(l.code, l.name)" angular-ripple>
+              </div>
+            </div>
+          </ion-content>
+        </ion-modal-view>
+      </script>
+      <!-- languages modal -->
+    </ion-content>
+    <div class="bar bar-footer bar-positive">
+      <div class="title">Output language: {{lang.name}}</div>
+    </div>
+  </ion-pane>
+</body>
+
+</html>
+
