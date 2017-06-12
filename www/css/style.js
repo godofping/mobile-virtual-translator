@@ -39,6 +39,20 @@ export default StyleSheet.create({
     'margin': [{ 'unit': 'px', 'value': 0 }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'px', 'value': 0 }, { 'unit': 'string', 'value': 'auto' }],
     'marginTop': [{ 'unit': '%V', 'value': 0.6 }]
   },
+  '#mainSpinner': {
+    'marginTop': [{ 'unit': '%V', 'value': 0.5 }]
+  },
+  '#cardList': {
+    'display': 'table',
+    'margin': [{ 'unit': 'px', 'value': 0 }, { 'unit': 'string', 'value': 'auto' }, { 'unit': 'px', 'value': 0 }, { 'unit': 'string', 'value': 'auto' }]
+  },
+  'card': {
+    'boxShadow': [{ 'unit': 'px', 'value': 0 }, { 'unit': 'px', 'value': 3 }, { 'unit': 'px', 'value': 6 }, { 'unit': 'string', 'value': 'rgba(0,0,0,0.16)' }, { 'unit': 'string', 'value': 'rgba(0,0,0,0.16),' }, { 'unit': 'px', 'value': 0 }, { 'unit': 'px', 'value': 3 }, { 'unit': 'px', 'value': 6 }, { 'unit': 'string', 'value': 'rgba(0,0,0,0.23)' }]
+  },
+  'card-lang-item': {
+    'background': '#387EF5',
+    'color': '#FFFFFF'
+  },
   'button-right': {
     'display': 'block !important',
     'width': [{ 'unit': '%H', 'value': 1 }, { 'unit': 'string', 'value': '!important' }],

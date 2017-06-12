@@ -68,6 +68,24 @@
   margin-top: 60%;
 }
 
+#mainSpinner {
+  margin-top: 50%;
+}
+
+#cardList {
+  display: table;
+  margin: 0 auto;
+}
+
+.card {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.card-lang-item {
+  background: #387EF5;
+  color: #FFFFFF;
+}
+
 .button-right {
   display: block !important;
   width: 100% !important;

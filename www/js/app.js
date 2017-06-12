@@ -1,7 +1,20 @@
-const translateApp = angular.module('translator', ['ionic', 'angularRipple']);
+const translateApp = angular.module('translator', ['ionic', 'angularRipple', 'ngCordova']);
 
-translateApp.run($ionicPlatform => {
+translateApp.run(($ionicPlatform, $ionicPopup) => {
   $ionicPlatform.ready(() => {
+    if (window.Connection) {
+      if (navigator.connection.type == Connection.NONE) {
+        $ionicPopup.confirm({
+            title: "Internet Disconnected",
+            content: "You need internet connection to run this app."
+          })
+          .then(result => {
+            if (!result) {
+              ionic.Platform.exitApp();
+            }
+          });
+      }
+    }
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -12,9 +25,11 @@ translateApp.run($ionicPlatform => {
   });
 })
 
-translateApp.controller('translateCtrl', ($scope, $timeout, $ionicModal, Translate, CordovaTTS) => {
+translateApp.controller('translateCtrl', ($rootScope, $scope, $timeout, $ionicModal, $ionicPopup, Translate, CordovaTTS) => {
   $scope.spinner = false;
   $scope.talkButton = false;
+  $rootScope.talkButton_text = "TAP TO TALK";
+  $rootScope.talkButton_disabled = false;
   $scope.lang = {
     artyom: "en-GB",
     yandex: "en",
@@ -119,6 +134,7 @@ translateApp.controller('translateCtrl', ($scope, $timeout, $ionicModal, Transla
     artyom.redirectRecognizedTextOutput((recognized, isFinal) => {
       if (isFinal) {
         Translate.get(recognized, $scope.lang.yandex, $scope.lang.artyom);
+        //Translate.get(recognized, $scope.lang.yandex);
         $scope.spinner = false;
         $scope.talkButton = false;
       } else {
@@ -129,6 +145,7 @@ translateApp.controller('translateCtrl', ($scope, $timeout, $ionicModal, Transla
   }
 
   $scope.start = () => {
+    $rootScope.talkButton_disabled = true;
     $scope.spinner = true;
     $scope.talkButton = true;
     startOneCommandArtyom();
@@ -136,41 +153,74 @@ translateApp.controller('translateCtrl', ($scope, $timeout, $ionicModal, Transla
   }
 
   $scope.selectLang = (code, name) => {
+
     $scope.lang.artyom = code;
     $scope.lang.yandex = code.substring(0, code.indexOf('-'));
     $scope.lang.name = name;
-    $scope.languagesModal.hide();
+    $scope.languagesModal.hide().then(() => {
+      $ionicPopup.alert({
+        title: "Language Selection",
+        content: `Output language set to ${name}`
+      })
+    })
+
+  }
+
+  $scope.cancelTalk = () => {
+    artyom.fatality();
+    $scope.spinner = false;
+    $scope.talkButton = false;
+    $rootScope.talkButton_text = "TAP TO TALK";
+    $rootScope.talkButton_disabled = false;
+  }
+
+  $scope.exit = () => {
+    $ionicPopup.confirm({
+        title: "Rate my App!",
+        content: "Thank you for using the app. Will you please rate it? :)"
+      })
+      .then(result => {
+        if (!result) {
+          ionic.Platform.exitApp();
+        } else {
+          ionic.Platform.exitApp();
+          // android url
+        }
+      });
   }
 })
 
-translateApp.factory('Translate', ($http, CordovaTTS) => {
+translateApp.factory('Translate', ($rootScope, $http, $timeout, CordovaTTS) => {
   const yandex_api = "trnsl.1.1.20170609T083328Z.bc764b99ad68e76a.6e5983803d01cb65a2b4bbfa1b2cfd872599d055";
   return {
     get(text, lang, ttsLang) {
+      $rootScope.talkButton_text = "Translating...";
       return $http.get(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=${yandex_api}&text=${text}&lang=${lang}`).then(response => {
+        $rootScope.talkButton_text = "TAP TO TALK";
+        $timeout(function() {
+          $rootScope.talkButton_disabled = false;
+        }, 250)
         //artyom.say(response.data.text[0]);
         CordovaTTS.say(response.data.text[0], ttsLang);
       }).catch(err => {
         //artyom.say("I'm sorry. An error occured.");
-        CordovaTTS.say("I'm sorry. An error occured.", ttsLang)
+        CordovaTTS.say("I'm sorry. There was an error. Might be your internet connection?", ttsLang)
       })
     }
   }
 })
 
-translateApp.factory('CordovaTTS', () => {
+translateApp.factory('CordovaTTS', function($rootScope) {
   return {
     say(text, lang) {
-      document.addEventListener('deviceready', function () {
-        return TTS
-          .speak({
-            text: text,
-            locale: lang,
-            rate: 1.2
-          });
-      }, false);
+      document.addEventListener('deviceready', function() {
+        TTS.speak({
+          text,
+          locale: lang,
+          rate: 1.2
+        })
+      }, false)
     }
   }
-
 })
 

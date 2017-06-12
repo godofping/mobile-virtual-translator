@@ -33,6 +33,7 @@
   <script src="cordova.js"></script>
 
   <!-- your app's js -->
+  <script src="lib/ngCordova/dist/ng-cordova.js"></script>
   <script src="js/app.js"></script>
 
   <script type="text/javascript" src="lib/angular-ripple/angular-ripple.js"></script>
@@ -45,38 +46,46 @@
     <ion-header-bar class="bar-positive">
       <h1 class="title">Handy Translator</h1>
       <div class="buttons">
-        <button class="button button-icon ion-ios-gear-outline " ng-click="languagesModal.show()"></button>
+        <button class="button button-icon ion-ios-gear" ng-click="languagesModal.show()"></button>
+        <button class="button button-icon ion-android-exit" ng-click="exit()"></button>
       </div>
     </ion-header-bar>
     <ion-content padding="true">
-      <div class="spinner" ng-show="spinner">
-        <div class="rect1"></div>
-        <div class="rect2"></div>
-        <div class="rect3"></div>
-        <div class="rect4"></div>
-        <div class="rect5"></div>
+      <div ng-show="spinner" id="mainSpinner">
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+        <p class="assertive" style="text-align: center;" ng-click="cancelTalk()">Cancel</p>
       </div>
-      <button ng-click="start()" class="button button-large button-assertive icon-left ion-chatbubble-working" id="talkButton"
+      
+      <button ng-click="start()" ng-disabled="talkButton_disabled" class="button button-large button-assertive icon-left ion-chatbubble-working" id="talkButton"
         ng-hide="talkButton">
-          TAP TO TALK
+          {{talkButton_text}}
         </button>
         <!-- languages modal -->
       <script id="languages.html" type="text/ng-template">
         <ion-modal-view>
           <ion-header-bar class="bar-assertive">
             <h1 class="title">Available Languages</h1>
-            <button class="button button-icon ion-close " ng-click="languagesModal.hide()" angular-ripple></button>
+            <button class="button button-icon ion-ios-close-outline " ng-click="languagesModal.hide()" angular-ripple></button>
           </ion-header-bar>
 
           <ion-content class="padding">
-            <div class="card" ng-repeat="l in languages">
-              <div class="item item-divider">
-                {{l.name}}
-              </div>
-              <div class="item item-image" >
-                <img ng-src="{{l.img}}" alt="{{l.img}}" ng-click="selectLang(l.code, l.name)" angular-ripple>
+            <div id="cardList">
+              <div class="card" ng-repeat="l in languages" style="width: 100%; height:100%">
+                <div class="item item-divider card-lang-item">
+                  {{l.name}}
+                </div>
+                <div class="item item-image" angular-ripple>
+                  <img ng-src="{{l.img}}" alt="{{l.img}}" ng-click="selectLang(l.code, l.name)">
+                </div>
               </div>
             </div>
+            
           </ion-content>
         </ion-modal-view>
       </script>
