@@ -6,3 +6,8 @@ Install dependencies
 ```
 npm install
 ```
+
+Install plugins
+```
+ionic state restore
+```
